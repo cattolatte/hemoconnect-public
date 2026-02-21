@@ -1,40 +1,31 @@
-import Link from "next/link";
-import { ThemeToggle } from "./ThemeToggle";
-import { UserNav } from "./UserNav";
-import { Button } from "@/components/ui/button"; // Use correct alias
+import Link from "next/link"
+import { Heart } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/shared/ThemeToggle"
 
 export function Navbar() {
   return (
-    <nav className="border-b bg-background">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Left Side: Logo/Title and Nav Links */}
-        <div className="flex items-center space-x-6">
-          <Link href="/dashboard" className="text-lg font-semibold">
-            ✨ HemoConnect
+    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+        <Button asChild variant="ghost" className="gap-2 px-2">
+          <Link href="/">
+            <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
+              <Heart className="size-4 text-primary" />
+            </div>
+            <span className="text-lg font-semibold">HemoConnect</span>
           </Link>
-          {/* Navigation Links Placeholder - Map over links later */}
-          <div className="hidden items-center space-x-4 md:flex">
-             <Link href="/dashboard">
-                 <Button variant="ghost" size="sm">Dashboard</Button>
-             </Link>
-             <Link href="/forum">
-                 <Button variant="ghost" size="sm">Forum</Button>
-             </Link>
-             <Link href="/resources">
-                 <Button variant="ghost" size="sm">Resources</Button>
-             </Link>
-             {/* Add more links as needed */}
-          </div>
-        </div>
+        </Button>
 
-        {/* Right Side: Theme Toggle and UserNav */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center gap-2">
           <ThemeToggle />
-          <UserNav />
-          {/* Mobile Menu Button - Add later if needed */}
-          {/* <Button variant="ghost" size="icon" className="md:hidden">...</Button> */}
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/login">Sign In</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/signup">Get Started</Link>
+          </Button>
         </div>
       </div>
-    </nav>
-  );
+    </header>
+  )
 }

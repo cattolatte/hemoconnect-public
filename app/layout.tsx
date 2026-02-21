@@ -1,13 +1,9 @@
-"use client"; // Needs to be a client component to use useEffect
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/shared/ThemeProvider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
-import { cn } from "@/lib/utils";
-import React, { useState, useEffect } from "react"; // Import useState, useEffect
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,41 +15,51 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Note: Metadata export might need adjustment if layout becomes client component fully.
-// Consider moving Metadata to specific pages or using generateMetadata if needed.
-// For now, keep it simple for debugging.
-// export const metadata: Metadata = { ... }; // Removed for simplicity, add back later
+export const metadata: Metadata = {
+  title: {
+    default: "HemoConnect — Community for People with Hemophilia",
+    template: "%s | HemoConnect",
+  },
+  description:
+    "Connect with peers, share experiences, and access resources in a supportive community built for people living with hemophilia and bleeding disorders.",
+  keywords: [
+    "hemophilia",
+    "bleeding disorders",
+    "community",
+    "peer support",
+    "factor VIII",
+    "factor IX",
+    "von Willebrand",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "HemoConnect",
+    title: "HemoConnect — Community for People with Hemophilia",
+    description:
+      "Connect with peers, share experiences, and access resources in a supportive community platform.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HemoConnect",
+    description:
+      "A supportive community platform for people with hemophilia and bleeding disorders.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // --- Client Mount Check ---
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  // --- End Client Mount Check ---
-
-  // NOTE: You cannot export Metadata directly from a Client Component ('use client')
-  // You would need to handle title/description differently, e.g., in child pages
-  // or using a different pattern if metadata needs to be dynamic based on client state (unlikely here).
-
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-          {/* Add basic title/desc here if removing metadata export */}
-          <title>HemoConnect - AI Peer Matching for Hemophilia</title>
-          <meta name="description" content="Connect with others in the hemophilia community based on shared experiences." />
-      </head>
       <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          geistSans.variable,
-          geistMono.variable
-        )}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"
@@ -61,17 +67,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* Only render ThemeToggle after component has mounted */}
-          {isMounted && (
-            <div className="absolute top-4 right-4 z-50">
-              <ThemeToggle />
-            </div>
-          )}
-          {children}
-          <Toaster richColors position="top-right" />
+          <TooltipProvider>
+            {children}
+          </TooltipProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
   );
 }
-

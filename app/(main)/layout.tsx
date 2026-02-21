@@ -1,26 +1,27 @@
-import { Navbar } from "@/components/shared/Navbar"; // Use correct alias
-import { Sidebar } from "@/components/shared/Sidebar"; // Use correct alias
+import { getUser } from "@/lib/actions/user"
+import { getUnreadCount } from "@/lib/actions/notifications"
+import { getCurrentUserRole } from "@/lib/actions/admin"
+import { MainLayoutClient } from "@/components/shared/MainLayoutClient"
 
-export default function MainAppLayout({
+export default async function MainLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
+  const user = await getUser()
+
+  const [unreadNotifications, userRole] = await Promise.all([
+    user ? getUnreadCount() : Promise.resolve(0),
+    user ? getCurrentUserRole() : Promise.resolve(null),
+  ])
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar />
-      <div className="flex flex-1">
-        {/* Optional Sidebar - uncomment/adjust if needed */}
-        {/* <Sidebar /> */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
-          {/* Page content goes here */}
-          {children}
-        </main>
-      </div>
-       {/* Optional Footer */}
-       {/* <footer className="border-t p-4 text-center text-sm text-muted-foreground">
-           © {new Date().getFullYear()} HemoConnect
-       </footer> */}
-    </div>
-  );
+    <MainLayoutClient
+      user={user}
+      unreadNotifications={unreadNotifications}
+      userRole={userRole}
+    >
+      {children}
+    </MainLayoutClient>
+  )
 }
